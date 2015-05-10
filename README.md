@@ -2,7 +2,8 @@
 
 ###Synopsis
 
-TBD.
+This repositories contains data structures and algorithms that I've wrote once and never ever want to write again.
+It can be seen as a simple C++ toolbox like any other.
 
 ###Installation
 
@@ -15,10 +16,6 @@ make install
 ```
 
 But I would highly recommend that you take a look at what it does, before running it.
-
-###Dependencies
-
-The library depends on Boost.Any for `aid/ecs`.
 
 ###Testing
 
