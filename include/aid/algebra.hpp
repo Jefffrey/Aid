@@ -6,7 +6,7 @@
 namespace aid {
 
     template<typename Vector>
-    auto x(Vector&& vec) -> decltype(vec[0]) {
+    auto x(Vector&& vec) {
         static_assert
             ( aid::is_two_dimensional_vector<Vector>::value
             || aid::is_three_dimensional_vector<Vector>::value
@@ -16,7 +16,7 @@ namespace aid {
     }
 
     template<typename Vector>
-    auto y(Vector&& vec) -> decltype(vec[1]) {
+    auto y(Vector&& vec) {
         static_assert
             (  aid::is_two_dimensional_vector<Vector>::value
             || aid::is_three_dimensional_vector<Vector>::value
@@ -26,7 +26,7 @@ namespace aid {
     }
 
     template<typename Vector>
-    auto z(Vector&& vec) -> decltype(vec[2]) {
+    auto z(Vector&& vec) {
         static_assert
             (  aid::is_three_dimensional_vector<Vector>::value
             || aid::is_four_dimensional_vector<Vector>::value
@@ -35,7 +35,7 @@ namespace aid {
     }
 
     template<typename Vector>
-    auto w(Vector&& vec) -> decltype(vec[3]) {
+    auto w(Vector&& vec) {
         static_assert
             ( aid::is_four_dimensional_vector<Vector>::value
             , "function `w` is only available for 4 dimensional vectors" );

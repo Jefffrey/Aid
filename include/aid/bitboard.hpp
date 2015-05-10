@@ -8,20 +8,22 @@ namespace aid {
     class bitboard {
     public:
 
-        // aliases
-        using bitboard_type = bitboard<Rows, Cols>;
-        using reference     = bitboard_type::reference;
+        using bitset_type   = std::bitset<Rows * Cols>;
+        using reference     = bitset_type::reference;
 
-        // constructors
         bitboard() = default;
-        bitboard(bitboard_type const&) = default;
-        bitboard(bitboard_type&&) = default;
+        bitboard(bitboard const&) = default;
 
-        // assignment
-        bitboard_type& operator=(bitboard_type const&) = default;
-        bitboard_type& operator=(bitboard_type&&) = default;
+        bitboard(bitboard&&) 
+            noexcept(std::is_nothrow_move_constructible(bitset_type)::value)
+            = default;
 
-        // element access
+        bitboard& operator=(bitboard const&) = default;
+
+        bitboard& operator=(bitboard&&)
+            noexcept(std::is_nothrow_move_assignable(bitset_type)::value)
+            = default;
+
         reference operator()(std::size_t row, std::size_t col) {
             return bitset[row * Cols + col];
         }
@@ -30,28 +32,27 @@ namespace aid {
             return bitset[row * Cols + col];
         }
 
-        // bitwise operations
-        bitboard_type& operator&=(bitboard_type const& rhs) {
+        bitboard& operator&=(bitboard const& rhs) {
             bitset &= rhs.bitset;
             return (*this);
         }
 
-        bitboard_type& operator|=(bitboard_type const& rhs) {
+        bitboard& operator|=(bitboard const& rhs) {
             bitset |= rhs.bitset;
             return (*this);
         }
 
-        bitboard_type& operator^=(bitboard_type const& rhs) {
+        bitboard& operator^=(bitboard const& rhs) {
             bitset ^= rhs.bitset;
             return (*this);
         }
 
-        bitboard_type& operator<<=(std::size_t s) {
+        bitboard& operator<<=(std::size_t s) {
             bitset <<= s;
             return (*this);
         }
 
-        bitboard_type& operator>>=(std::size_t s) {
+        bitboard& operator>>=(std::size_t s) {
             bitset >>= s;
             return (*this);
         }
@@ -59,26 +60,27 @@ namespace aid {
         void reset() { bitset.reset(); }
         void flip() { bitset.flip(); }
 
-        bitboard_type operator~() const {
-            bitboard_type ret(*this);
+        bitboard operator~() const {
+            bitboard ret(*this);
             ret.bitset = ~ret.bitset;
             return ret;
         }
 
-        // equality & inequality
-        bool operator==(bitboard_type const& rhs) const { return bitboard == rhs.bitboard; }
-        bool operator!=(bitboard_type const& rhs) const { return !((*this) == rhs); }
+        bool operator==(bitboard const& rhs) const { return bitboard == rhs.bitboard; }
+        bool operator!=(bitboard const& rhs) const { return !((*this) == rhs); }
 
-        // bit query
         bool all() const { return bitset.all(); }
         bool none() const { return bitset.none(); }
         bool any() const { return bitset.any(); }
 
-        // size
         constexpr std::size_t rows() const { return Rows; }
         constexpr std::size_t columns() const { return Cols; }
         constexpr std::size_t size() const { return Rows * Cols; }
         std::size_t count() const { return bitset.count(); }
+
+        void swap(bitboard& rhs) noexcept {
+            bitset.swap(rhs.bitset);
+        }
 
     private:
 

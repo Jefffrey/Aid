@@ -17,9 +17,7 @@ namespace aid {
     class matrix {
     public:
 
-        using matrix_type = matrix<ValueType, Rows, Cols>;
-        using array_type  = std::array<ValueType, Rows * Cols>;
-
+        using array_type        = std::array<ValueType, Rows * Cols>;
         using value_type        = typename array_type::value_type;
         using reference         = typename array_type::reference;
         using const_reference   = typename array_type::const_reference;
@@ -27,12 +25,23 @@ namespace aid {
         using iterator          = typename array_type::iterator;
         using const_iterator    = typename array_type::const_iterator;
 
-        static constexpr std::size_t col_size = Rows;
-        static constexpr std::size_t row_size = Cols;
-        static constexpr std::size_t matrix_size = Rows * Cols;
+        static constexpr std::size_t col_size       = Rows;
+        static constexpr std::size_t row_size       = Cols;
+        static constexpr std::size_t matrix_size    = Rows * Cols;
 
-        // constructors
         matrix() = default;
+
+        matrix(matrix&&) 
+            noexcept(std::is_nothrow_move_constructible<array_type>::value)
+            = default;
+
+        matrix(matrix const&) = default;
+
+        matrix& operator=(matrix&&)
+            noexcept(std::is_nothrow_move_assignable<array_type>::value)
+            = default;
+
+        matrix& operator=(matrix const&) = default;
 
         explicit matrix(value_type elem) {
             std::fill(array.begin(), array.end(), elem);
@@ -43,9 +52,6 @@ namespace aid {
         explicit matrix(std::initializer_list<value_type> const& list) {
             std::copy(list.begin(), list.end(), array.begin());
         }
-
-        matrix(matrix_type const&)  = default;
-        matrix(matrix_type&&)       = default;
 
         // These iterators are not guaranteed to have any specific
         // order. The only guarantee is that every element is accessed
@@ -69,61 +75,52 @@ namespace aid {
 
         // @todo: add row major and col major iterators
 
-        // element access
-        reference operator()(size_type row, size_type col) noexcept {
+        reference operator()(size_type row, size_type col) {
             return array[row * Cols + col];
         }
 
-        const_reference operator()(size_type row, size_type col) const noexcept {
+        const_reference operator()(size_type row, size_type col) const {
             return array[row * Cols + col];
         }
 
-        reference operator[](size_type i) noexcept {
+        reference operator[](size_type i) {
             static_assert
-                ( aid::is_vector<matrix_type>::value
+                ( aid::is_vector<matrix>::value
                 , "member function `operator[]` is only available for vectors" );
             return array[i];
         }
 
-        const_reference operator[](size_type i) const noexcept {
+        const_reference operator[](size_type i) const {
             static_assert
-                ( aid::is_vector<matrix_type>::value
+                ( aid::is_vector<matrix>::value
                 , "member function `operator[]` is only available for vectors" );
             return array[i];
         }
 
-        // underlying data access
         value_type* data() { return array.data(); }
         value_type const* data() const { return array.data(); }
         
-        // size informations
-        constexpr size_type size() const noexcept { 
+        constexpr size_type size() const { 
             return Rows * Cols;
         }
 
-        constexpr size_type max_size() const noexcept {
+        constexpr size_type max_size() const {
             return Rows * Cols; 
         }
 
-        constexpr bool empty() const noexcept {
+        constexpr bool empty() const {
             return (Rows * Cols == 0);
         }
 
-        // swap algorithms
-        void swap(matrix_type& other) noexcept {
+        void swap(matrix& other) noexcept {
             array.swap(other.array); 
         }
 
-        // copy and move assignment
-        matrix_type& operator=(matrix_type const&)    = default;
-        matrix_type& operator=(matrix_type&&)         = default;
-
-        // equality operators
-        bool operator==(matrix_type const& rhs) const {
+        bool operator==(matrix const& rhs) const {
             return std::equal(array.begin(), array.end(), rhs.array.begin());
         }
 
-        bool operator!=(matrix_type const& rhs) const {
+        bool operator!=(matrix const& rhs) const {
             return !((*this) == rhs);
         }
 

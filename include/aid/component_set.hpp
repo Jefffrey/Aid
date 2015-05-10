@@ -5,17 +5,27 @@
 
 namespace aid {
 
-
     class component_set {
+    private:
+
+        struct placeholder;
+        using component_type = std::unique_ptr<placeholder>;
+        using container_type = std::unordered_map<std::type_index, component_type>;
+
     public:
         
-        // construction
         component_set() = default;
-        component_set(component_set&&) = default;
+
+        component_set(component_set&&)
+            noexcept(std::is_nothrow_move_constructible<container_type>::value)
+            = default;
+
         component_set(component_set const& rhs) { (*this) = rhs; }
 
-        // assignment
-        component_set& operator=(component_set&&) = default;
+        component_set& operator=(component_set&&)
+            noexcept(std::is_nothrow_move_assignable<container_type>::value)
+            = default;
+
         component_set& operator=(component_set const& rhs) {
             for (auto const& p : rhs.components)
                 components.emplace
@@ -23,7 +33,6 @@ namespace aid {
                     , p.second->clone() );
         }
 
-        // component query
         template<typename Component, typename Component2, typename... Components>
         bool has() const {
             return has<Component>() && has<Component2, Components...>();
@@ -35,21 +44,18 @@ namespace aid {
             return it != components.end();
         }
 
-        // component access
         template<typename Component>
         Component& get() {
             auto it = components.find(std::type_index(typeid(Component)));
             return static_cast<holder<Component>*>(it->second.get())->component;
         }
 
-        // component access
         template<typename Component>
         Component const& get() const {
             auto it = components.find(std::type_index(typeid(Component)));
             return static_cast<holder<Component>*>(it->second.get())->component;
         }
 
-        // component addition
         template<typename Component, typename... Args>
         void add(Args&&... args) {
             components.emplace
@@ -57,7 +63,6 @@ namespace aid {
                 , component_type(new holder<Component>(Component(std::forward<Args>(args)...))));
         }
 
-        // component removal
         template<typename Component>
         void remove() {
             components.erase(std::type_index(typeid(Component)));
@@ -65,46 +70,46 @@ namespace aid {
 
     private:
 
-        // boost's any-like magic
         struct placeholder {
-            virtual ~placeholder() = default;
+
             virtual std::type_index type_index() const = 0;
             virtual std::unique_ptr<placeholder> clone() const = 0;
+            virtual ~placeholder() noexcept = default;
+
         };
 
         template<typename ComponentType>
         struct holder : placeholder {
+
             holder() = default;
             holder(holder&&) = default;
             holder(holder const&) = default;
 
-            holder(ComponentType const& rhs)
+            explicit holder(ComponentType const& rhs)
                 : component(rhs)
                 {}
 
-            holder(ComponentType&& rhs)
+            explicit holder(ComponentType&& rhs)
                 : component(std::move(rhs))
                 {}
 
-            virtual std::type_index type_index() const {
+            virtual std::type_index type_index() const override {
                 return std::type_index(typeid(ComponentType));
             }
 
-            virtual std::unique_ptr<placeholder> clone() const {
+            virtual std::unique_ptr<placeholder> clone() const override {
                 return std::unique_ptr<placeholder>
                     (new holder<ComponentType>(component));
             }
 
             ComponentType component;
+
         };
 
-        // hash based container
-        using component_type = std::unique_ptr<placeholder>;
-        std::unordered_map<std::type_index, component_type> components;
+        container_type components;
 
     };
 
-    // non member functions
     template<typename... Components>
     inline bool has(component_set const& e) { return e.has<Components...>(); }
 
