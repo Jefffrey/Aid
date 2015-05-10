@@ -2,7 +2,6 @@
 
 #include <unordered_map>
 #include <typeindex>
-#include <boost/any.hpp>
 
 namespace aid {
 
