@@ -6,17 +6,17 @@
 
 namespace aid {
 
-    class entity {
+    class component_set {
     public:
         
         // construction
-        entity() = default;
-        entity(entity const&) = default;
-        entity(entity&&) = default;
+        component_set() = default;
+        component_set(component_set&&) = default;
+        component_set(component_set const& rhs) = delete;
 
         // assignment
-        entity& operator=(entity const&) = default;
-        entity& operator=(entity&&) = default;
+        component_set& operator=(component_set&&) = default;
+        component_set& operator=(component_set const&) = delete;
 
         // component query
         template<typename Component, typename Component2, typename... Components>
@@ -34,22 +34,26 @@ namespace aid {
         template<typename Component>
         Component& get() {
             auto it = components.find(std::type_index(typeid(Component)));
-            return boost::any_cast<Component&>(it->second);
+            return *static_cast<Component*>(it->second.get());
         }
 
         // component access
         template<typename Component>
         Component const& get() const {
             auto it = components.find(std::type_index(typeid(Component)));
-            return boost::any_cast<Component&>(it->second);
+            return *static_cast<Component*>(it->second.get());
         }
 
         // component addition
         template<typename Component, typename... Args>
         void add(Args&&... args) {
+            auto component_deleter		
+                = [](void* ptr) { delete static_cast<Component*>(ptr); };
             components.emplace
                 ( std::type_index(typeid(Component))
-                , Component(std::forward<Args>(args)...));
+                , component_type
+                    ( new Component(std::forward<Args>(args)...)
+                    , component_deleter ));
         }
 
         // component removal
@@ -61,27 +65,27 @@ namespace aid {
     private:
 
         // attributes
-        using component_type = boost::any;
+        using component_type = std::unique_ptr<void, void(*)(void*)>;
         std::unordered_map<std::type_index, component_type> components;
 
     };
 
     // non member functions
     template<typename... Components>
-    inline bool has(entity const& e) { return e.has<Components...>(); }
+    inline bool has(component_set const& e) { return e.has<Components...>(); }
 
     template<typename Component>
-    inline Component& get(entity& e) { return e.get<Component>(); }
+    inline Component& get(component_set& e) { return e.get<Component>(); }
 
     template<typename Component>
-    inline Component const& get(entity const& e) { return e.get<Component>(); }
+    inline Component const& get(component_set const& e) { return e.get<Component>(); }
 
     template<typename Component, typename... Args>
-    inline void add(entity& e, Args... args) { 
+    inline void add(component_set& e, Args... args) { 
         e.add<Component>(std::forward<Args>(args)...);
     }
 
     template<typename Component>
-    inline void remove(entity& e) { e.remove<Component>(); }
+    inline void remove(component_set& e) { e.remove<Component>(); }
 
 }

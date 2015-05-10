@@ -1,4 +1,5 @@
 CC				:= clang++
+
 RM				:= rm
 CP 				:= cp
 
@@ -8,8 +9,7 @@ CP_FLAGS 		:= -fR
 
 SUITE_EXE 		:= suite
 SUITE_CPP_FILES	:= $(wildcard test/main.cpp)\
-				   $(wildcard test/aid/*.cpp)\
-				   $(wildcard test/aid/ecs/*.cpp)
+				   $(wildcard test/aid/*.cpp)
 SUITE_OBJ_FILES	:= $(SUITE_CPP_FILES:.cpp=.o)
 
 INSTALL_PATH	:= /usr/local/include
