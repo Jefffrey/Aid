@@ -12,6 +12,22 @@ struct comp6 : comp2 { double attr2; comp6(int a, double b) : comp2(a), attr2(b)
 
 TEST_CASE("aid::component_set") {
 
+    SECTION("copy construction") {
+        aid::component_set set_a;
+        set_a.add<comp1>(123);
+        set_a.add<comp2>(456);
+
+        aid::component_set set_b(set_a);
+        REQUIRE(set_b.get<comp1>().attr == 123);
+        REQUIRE(set_b.get<comp2>().attr == 456);
+
+        set_b.get<comp1>().attr = 789;
+        REQUIRE(set_a.get<comp1>().attr == 123);
+        REQUIRE(set_a.get<comp2>().attr == 456);
+        REQUIRE(set_b.get<comp1>().attr == 789);
+        REQUIRE(set_b.get<comp2>().attr == 456);
+    }
+
     SECTION("adding components") {
         aid::component_set set_a;
         set_a.add<comp1>(123);

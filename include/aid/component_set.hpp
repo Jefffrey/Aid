@@ -13,11 +13,16 @@ namespace aid {
         // construction
         component_set() = default;
         component_set(component_set&&) = default;
-        component_set(component_set const& rhs) = delete;
+        component_set(component_set const& rhs) { (*this) = rhs; }
 
         // assignment
         component_set& operator=(component_set&&) = default;
-        component_set& operator=(component_set const&) = delete;
+        component_set& operator=(component_set const& rhs) {
+            for (auto const& p : rhs.components)
+                components.emplace
+                    ( p.second->type_index()
+                    , p.second->clone() );
+        }
 
         // component query
         template<typename Component, typename Component2, typename... Components>
@@ -64,6 +69,7 @@ namespace aid {
         // boost's any-like magic
         struct placeholder {
             virtual ~placeholder() = default;
+            virtual std::type_index type_index() const = 0;
             virtual std::unique_ptr<placeholder> clone() const = 0;
         };
 
@@ -80,6 +86,10 @@ namespace aid {
             holder(ComponentType&& rhs)
                 : component(std::move(rhs))
                 {}
+
+            virtual std::type_index type_index() const {
+                return std::type_index(typeid(ComponentType));
+            }
 
             virtual std::unique_ptr<placeholder> clone() const {
                 return std::unique_ptr<placeholder>
