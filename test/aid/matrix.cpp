@@ -57,6 +57,17 @@ TEST_CASE("aid::matrix") {
         REQUIRE(mat_b(2, 0) == 4);
     }
 
+    SECTION("generator constructor") {
+        auto gen = [](std::size_t r, std::size_t c) {
+            return (r == c) ? r : -1;
+        };
+        aid::matrix<int, 4, 5> mat_a(gen);
+        REQUIRE(mat_a(0, 0) == 0);
+        REQUIRE(mat_a(1, 1) == 1);
+        REQUIRE(mat_a(2, 2) == 2);
+        REQUIRE(mat_a(3, 3) == 3);
+    }
+
     SECTION("access operator") {    
         aid::matrix<int, 2> mat2x2 { 4, 6, 12, 64 };
         REQUIRE(mat2x2(0, 0) == 4);

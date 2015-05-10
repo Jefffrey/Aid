@@ -37,21 +37,26 @@ namespace aid {
 
         matrix(matrix const&) = default;
 
+        explicit matrix(value_type elem) {
+            std::fill(array.begin(), array.end(), elem);
+        }
+
+        explicit matrix(std::initializer_list<value_type> const& list) {
+            std::copy(list.begin(), list.end(), array.begin());
+        }
+
+        template<typename BinaryOp>
+        explicit matrix(BinaryOp gen) {
+            for (std::size_t r = 0; r < Rows; ++r)
+                for (std::size_t c = 0; c < Cols; ++c)
+                    (*this)(r, c) = gen(r, c);
+        }
+
         matrix& operator=(matrix&&)
             noexcept(std::is_nothrow_move_assignable<array_type>::value)
             = default;
 
         matrix& operator=(matrix const&) = default;
-
-        explicit matrix(value_type elem) {
-            std::fill(array.begin(), array.end(), elem);
-        }
-
-        // @todo: add generator constructor
-
-        explicit matrix(std::initializer_list<value_type> const& list) {
-            std::copy(list.begin(), list.end(), array.begin());
-        }
 
         // These iterators are not guaranteed to have any specific
         // order. The only guarantee is that every element is accessed
