@@ -6,6 +6,7 @@
 
 namespace aid {
 
+
     class component_set {
     public:
         
@@ -34,26 +35,22 @@ namespace aid {
         template<typename Component>
         Component& get() {
             auto it = components.find(std::type_index(typeid(Component)));
-            return *static_cast<Component*>(it->second.get());
+            return static_cast<holder<Component>*>(it->second.get())->component;
         }
 
         // component access
         template<typename Component>
         Component const& get() const {
             auto it = components.find(std::type_index(typeid(Component)));
-            return *static_cast<Component*>(it->second.get());
+            return static_cast<holder<Component>*>(it->second.get())->component;
         }
 
         // component addition
         template<typename Component, typename... Args>
         void add(Args&&... args) {
-            auto component_deleter		
-                = [](void* ptr) { delete static_cast<Component*>(ptr); };
             components.emplace
                 ( std::type_index(typeid(Component))
-                , component_type
-                    ( new Component(std::forward<Args>(args)...)
-                    , component_deleter ));
+                , component_type(new holder<Component>(Component(std::forward<Args>(args)...))));
         }
 
         // component removal
@@ -64,8 +61,36 @@ namespace aid {
 
     private:
 
-        // attributes
-        using component_type = std::unique_ptr<void, void(*)(void*)>;
+        // boost's any-like magic
+        struct placeholder {
+            virtual ~placeholder() = default;
+            virtual std::unique_ptr<placeholder> clone() const = 0;
+        };
+
+        template<typename ComponentType>
+        struct holder : placeholder {
+            holder() = default;
+            holder(holder&&) = default;
+            holder(holder const&) = default;
+
+            holder(ComponentType const& rhs)
+                : component(rhs)
+                {}
+
+            holder(ComponentType&& rhs)
+                : component(std::move(rhs))
+                {}
+
+            virtual std::unique_ptr<placeholder> clone() const {
+                return std::unique_ptr<placeholder>
+                    (new holder<ComponentType>(component));
+            }
+
+            ComponentType component;
+        };
+
+        // hash based container
+        using component_type = std::unique_ptr<placeholder>;
         std::unordered_map<std::type_index, component_type> components;
 
     };
