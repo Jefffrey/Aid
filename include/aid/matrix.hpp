@@ -9,8 +9,6 @@
 
 namespace aid {
 
-    // Very simple matrix class for very small 2x2, 3x3, 4x4 matrixes
-    // or 2, 3, 4-dimensional vectors.
     template<
         typename ValueType, 
         std::size_t Rows, std::size_t Cols = Rows>
@@ -30,19 +28,17 @@ namespace aid {
         static constexpr std::size_t matrix_size    = Rows * Cols;
 
         matrix() = default;
-
-        matrix(matrix&&) 
-            noexcept(std::is_nothrow_move_constructible<array_type>::value)
-            = default;
-
+        matrix(matrix&&) = default;
         matrix(matrix const&) = default;
+        matrix& operator=(matrix&&) = default;
+        matrix& operator=(matrix const&) = default;
 
         explicit matrix(value_type elem) {
             std::fill(array.begin(), array.end(), elem);
         }
 
         explicit matrix(std::initializer_list<value_type> const& list) {
-            std::copy(list.begin(), list.end(), array.begin());
+            std::copy(list.begin(), list.end(), this->begin());
         }
 
         template<typename BinaryOp>
@@ -52,16 +48,6 @@ namespace aid {
                     (*this)(r, c) = gen(r, c);
         }
 
-        matrix& operator=(matrix&&)
-            noexcept(std::is_nothrow_move_assignable<array_type>::value)
-            = default;
-
-        matrix& operator=(matrix const&) = default;
-
-        // These iterators are not guaranteed to have any specific
-        // order. The only guarantee is that every element is accessed
-        // only once and the order in which elements are accessed is the
-        // same for matrix of equal dimensions.
         iterator begin() { return array.begin(); }
         const_iterator begin() const { return array.begin(); }
         const_iterator cbegin() const { return array.cbegin(); }
@@ -77,8 +63,6 @@ namespace aid {
         iterator rend() { return array.rend(); }
         const_iterator rend() const { return array.rend(); }
         const_iterator crend() const { return array.crend(); }
-
-        // @todo: add row major and col major iterators
 
         reference operator()(size_type row, size_type col) {
             return array[row * Cols + col];
@@ -114,7 +98,7 @@ namespace aid {
         }
 
         constexpr bool empty() const {
-            return (Rows * Cols == 0);
+            return (size() == 0);
         }
 
         void swap(matrix& other) noexcept {

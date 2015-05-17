@@ -5,3 +5,4 @@ tests
 obj/
 *.o
 *.pyc
+*.ninja

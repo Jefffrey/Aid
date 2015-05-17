@@ -2,7 +2,6 @@
 
 #include <aid/component_set.hpp>
 
-// testing components
 struct comp1 { int attr; comp1(int a) : attr(a) {} };
 struct comp2 { int attr; comp2(int a) : attr(a) {} };
 struct comp3 { double attr; comp3(double a) : attr(a) {} };
