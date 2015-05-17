@@ -1,4 +1,4 @@
-#include "../ext/catch.hpp"
+#include <catch/catch.hpp>
 
 #include <aid/component_set.hpp>
 
