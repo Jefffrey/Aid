@@ -2,36 +2,18 @@
 
 #include <unordered_map>
 #include <typeindex>
+#include <boost/any.hpp>
 
 namespace aid {
 
     class component_set {
-    private:
-
-        struct placeholder;
-        using component_type = std::unique_ptr<placeholder>;
-        using container_type = std::unordered_map<std::type_index, component_type>;
-
     public:
         
         component_set() = default;
-
-        component_set(component_set&&)
-            noexcept(std::is_nothrow_move_constructible<container_type>::value)
-            = default;
-
-        component_set(component_set const& rhs) { (*this) = rhs; }
-
-        component_set& operator=(component_set&&)
-            noexcept(std::is_nothrow_move_assignable<container_type>::value)
-            = default;
-
-        component_set& operator=(component_set const& rhs) {
-            for (auto const& p : rhs.components)
-                components.emplace
-                    ( p.second->type_index()
-                    , p.second->clone() );
-        }
+        component_set(component_set&&) = default;
+        component_set(component_set const&) = default; 
+        component_set& operator=(component_set&&) = default;
+        component_set& operator=(component_set const&) = default;
 
         template<typename Component, typename Component2, typename... Components>
         bool has() const {
@@ -47,20 +29,20 @@ namespace aid {
         template<typename Component>
         Component& get() {
             auto it = components.find(std::type_index(typeid(Component)));
-            return static_cast<holder<Component>*>(it->second.get())->component;
+            return boost::any_cast<Component&>(it->second);
         }
 
         template<typename Component>
         Component const& get() const {
             auto it = components.find(std::type_index(typeid(Component)));
-            return static_cast<holder<Component>*>(it->second.get())->component;
+            return boost::any_cast<Component&>(it->second);
         }
 
         template<typename Component, typename... Args>
         void add(Args&&... args) {
             components.emplace
                 ( std::type_index(typeid(Component))
-                , component_type(new holder<Component>(Component(std::forward<Args>(args)...))));
+                , Component(std::forward<Args>(args)...) );
         }
 
         template<typename Component>
@@ -70,42 +52,7 @@ namespace aid {
 
     private:
 
-        struct placeholder {
-
-            virtual std::type_index type_index() const = 0;
-            virtual std::unique_ptr<placeholder> clone() const = 0;
-            virtual ~placeholder() noexcept = default;
-
-        };
-
-        template<typename ComponentType>
-        struct holder : placeholder {
-
-            holder() = default;
-            holder(holder&&) = default;
-            holder(holder const&) = default;
-
-            explicit holder(ComponentType const& rhs)
-                : component(rhs)
-                {}
-
-            explicit holder(ComponentType&& rhs)
-                : component(std::move(rhs))
-                {}
-
-            virtual std::type_index type_index() const override {
-                return std::type_index(typeid(ComponentType));
-            }
-
-            virtual std::unique_ptr<placeholder> clone() const override {
-                return std::unique_ptr<placeholder>
-                    (new holder<ComponentType>(component));
-            }
-
-            ComponentType component;
-
-        };
-
+        using container_type = std::unordered_map<std::type_index, boost::any>;
         container_type components;
 
     };
