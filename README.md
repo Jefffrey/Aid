@@ -10,7 +10,12 @@ It can be seen as a simple C++ toolbox like any other.
 The library depends on:
 
  - C++14
- - Boost.Any
+ - [Boost.Any](http://www.boost.org/doc/libs/1_58_0/doc/html/any.html)
+
+Additionally, testing depends on:
+
+ - Python
+ - [Ninja](https://martine.github.io/ninja/)
 
 ###Installation
 
