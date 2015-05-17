@@ -33,7 +33,7 @@ ninja = ninja_syntax.Writer(open('build.ninja', 'w'))
 # Ninja variables
 ninja.variable('ninja_required_version', '1.5')
 ninja.variable('builddir', 'obj')
-ninja.variable('include_flags', '-Iinclude -Ideps')
+ninja.variable('include_flags', '-Iinclude -Ideps/catch/include')
 ninja.variable('compiler_flags', '-Wall -Wextra -Wfatal-errors -Werror -std=c++14')
 ninja.variable('linker_flags', '')
 ninja.variable('compiler', args.cxx)
