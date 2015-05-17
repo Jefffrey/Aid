@@ -48,12 +48,15 @@ TEST_CASE("aid::component_set") {
         set_a.add<comp1>(123);
         set_a.add<comp5>(456, "ok");
 
-        REQUIRE((set_a.has<comp1, comp5>()));
-        REQUIRE((set_a.has<comp5, comp1>()));
-        REQUIRE(!(set_a.has<comp1, comp4, comp5>()));
+        REQUIRE((set_a.has_all<comp1, comp5>()));
+        REQUIRE((set_a.has_all<comp5, comp1>()));
+        REQUIRE(!(set_a.has_all<comp1, comp4, comp5>()));
 
-        REQUIRE(!(set_a.has<comp1, comp4, comp5>()));
-        REQUIRE(!(set_a.has<comp2, comp3, comp5>()));
+        REQUIRE(!(set_a.has_all<comp1, comp4, comp5>()));
+        REQUIRE(!(set_a.has_all<comp2, comp3, comp5>()));
+
+        REQUIRE((set_a.has_any<comp2, comp3, comp5, comp4>()));
+        REQUIRE(!(set_a.has_any<comp2, comp3, comp4>()));
     }
 
     SECTION("adding components of base classes") {
@@ -61,7 +64,7 @@ TEST_CASE("aid::component_set") {
         set_a.add<comp2>(123);
         set_a.add<comp5>(456, "5");
         set_a.add<comp6>(789, 3.141592);
-        REQUIRE((set_a.has<comp2, comp5, comp6>()));
+        REQUIRE((set_a.has_all<comp2, comp5, comp6>()));
         REQUIRE(set_a.get<comp2>().attr == 123);
         REQUIRE(set_a.get<comp5>().attr == 456);
         REQUIRE(set_a.get<comp5>().attr2 == "5");
@@ -91,7 +94,7 @@ TEST_CASE("aid::component_set") {
         set_a.add<comp5>(456, "5");
         set_a.add<comp6>(789, 3.141592);
         set_a.remove<comp2>();
-        REQUIRE((set_a.has<comp5, comp6>()));
+        REQUIRE((set_a.has_all<comp5, comp6>()));
         REQUIRE(!set_a.has<comp2>());
         REQUIRE(set_a.get<comp5>().attr == 456);
         REQUIRE(set_a.get<comp6>().attr == 789);
@@ -103,13 +106,13 @@ TEST_CASE("aid::component_set") {
         REQUIRE(set_a.get<comp6>().attr == 789);
 
         set_a.add<comp2>(321);
-        REQUIRE((set_a.has<comp2, comp6>()));
+        REQUIRE((set_a.has_all<comp2, comp6>()));
         REQUIRE(!set_a.has<comp5>());
         REQUIRE(set_a.get<comp2>().attr == 321);
         REQUIRE(set_a.get<comp6>().attr == 789);
 
         set_a.add<comp5>(654, "n5");
-        REQUIRE((set_a.has<comp2, comp5, comp6>()));
+        REQUIRE((set_a.has_all<comp2, comp5, comp6>()));
         REQUIRE(set_a.get<comp2>().attr == 321);
         REQUIRE(set_a.get<comp5>().attr == 654);
         REQUIRE(set_a.get<comp5>().attr2 == "n5");

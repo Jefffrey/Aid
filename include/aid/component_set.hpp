@@ -15,9 +15,24 @@ namespace aid {
         component_set& operator=(component_set&&) = default;
         component_set& operator=(component_set const&) = default;
 
-        template<typename Component, typename Component2, typename... Components>
-        bool has() const {
-            return has<Component>() && has<Component2, Components...>();
+        template<typename Component>
+        bool has_all() const {
+            return has<Component>();
+        }
+
+        template<typename Component1, typename Component2, typename... Components>
+        bool has_all() const {
+            return has<Component1>() && has_all<Component2, Components...>();
+        }
+
+        template<typename Component>
+        bool has_any() const {
+            return has<Component>();
+        }
+
+        template<typename Component1, typename Component2, typename... Components>
+        bool has_any() const {
+            return has<Component1>() || has_any<Component2, Components...>();
         }
 
         template<typename Component>
@@ -57,8 +72,14 @@ namespace aid {
 
     };
 
+    template<typename Component>
+    inline bool has(component_set const& e) { return e.has<Component>(); }
+
     template<typename... Components>
-    inline bool has(component_set const& e) { return e.has<Components...>(); }
+    inline bool has_any(component_set const& e) { return e.has_any<Components...>(); }
+
+    template<typename... Components>
+    inline bool has_all(component_set const& e) { return e.has_all<Components...>(); }
 
     template<typename Component>
     inline Component& get(component_set& e) { return e.get<Component>(); }
