@@ -1,5 +1,7 @@
 #pragma once
 
+#include <algorithm>
+
 #include <aid/matrix.hpp> 
 #include <aid/matrix_traits.hpp>
 
@@ -40,6 +42,12 @@ namespace aid {
             ( aid::is_four_dimensional_vector<Vector>::value
             , "function `w` is only available for 4 dimensional vectors" );
         return vec[3];
+    }
+
+    template<typename Matrix>
+    Matrix operator-(Matrix mat) {
+        std::transform(mat.begin(), mat.end(), mat.begin(), std::negate<void>());
+        return mat;
     }
 
 }

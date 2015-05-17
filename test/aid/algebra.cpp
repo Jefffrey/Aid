@@ -28,3 +28,15 @@ TEST_CASE("vector component access") {
     REQUIRE(aid::w(vec_c) == 98);
     REQUIRE(aid::w(vec_f) == -1);
 }
+
+TEST_CASE("matrix negation") {
+    aid::matrix<int, 3, 5> mat
+        { 0, -2, 3, 87, -1233
+        , 34, 97, -12, 87, 98
+        , 0, 0, 1, 2, -1 };
+    aid::matrix<int, 3, 5> mat_res
+        { 0, 2, -3, -87, 1233
+        , -34, -97, 12, -87, -98
+        , 0, 0, -1, -2, 1 };
+    REQUIRE((-mat) == mat_res);
+}
