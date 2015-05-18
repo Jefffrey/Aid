@@ -68,7 +68,7 @@ TEST_CASE("aid::matrix") {
         REQUIRE(mat_a(3, 3) == 3);
     }
 
-    SECTION("access operator") {    
+    SECTION("operator()") {    
         aid::matrix<int, 2> mat2x2 { 4, 6, 12, 64 };
         REQUIRE(mat2x2(0, 0) == 4);
         REQUIRE(mat2x2(0, 1) == 6);
@@ -76,7 +76,7 @@ TEST_CASE("aid::matrix") {
         REQUIRE(mat2x2(1, 1) == 64);
     }
 
-    SECTION("vector access operator") {
+    SECTION("operator[]") {
         aid::matrix<int, 1> vec_a { 1 };
         aid::matrix<int, 2, 1> vec_b { 123, 54 };
         aid::matrix<int, 3, 1> vec_c { 24, 64, 87 };
@@ -102,7 +102,7 @@ TEST_CASE("aid::matrix") {
         REQUIRE(mat_b.size() == 12);
     }
 
-    SECTION("maximum size") {
+    SECTION("max_size") {
         aid::matrix<int, 4, 2> mat;
         REQUIRE(mat.max_size() == mat.size());
         REQUIRE(mat.max_size() == 8);
@@ -147,7 +147,7 @@ TEST_CASE("aid::matrix") {
         REQUIRE(mat_a(3, 0) == 1);
     }
 
-    SECTION("equality/inequality operator") {
+    SECTION("operator==, operator!=") {
         aid::matrix<int, 2> mat2x2a { 1, 2, 3, 4 };
         aid::matrix<int, 2> mat2x2b { 2, 5, 7, 1 };
 
@@ -161,7 +161,7 @@ TEST_CASE("aid::matrix") {
 
 TEST_CASE("aid::row_vector") {
 
-    SECTION("matrix equality") {
+    SECTION("operator==") {
         aid::row_vector<int, 3> vec(0);
         aid::matrix<int, 1, 3> mat(0);
         REQUIRE(vec == mat);
@@ -171,7 +171,7 @@ TEST_CASE("aid::row_vector") {
 
 TEST_CASE("aid::col_vector") {
 
-    SECTION("matrix equality") {
+    SECTION("operator==") {
         aid::col_vector<int, 3> vec(0);
         aid::matrix<int, 3, 1> mat(0);
         REQUIRE(vec == mat);
