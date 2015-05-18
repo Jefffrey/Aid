@@ -40,3 +40,27 @@ TEST_CASE("matrix negation") {
         , 0, 0, -1, -2, 1 };
     REQUIRE((-mat) == mat_res);
 }
+
+TEST_CASE("matrix addition") {
+    aid::matrix<int, 3, 4> mat_a
+        { 3, 4, -1, 0
+        , 82, -245, -44, -2344
+        , 0, 0, 1, 0 };
+    aid::matrix<int, 3, 4> mat_b
+        { 33, 276, 0, 18
+        , 38, -38, -438, 97
+        , 0, 23, -1, 29 };
+    auto mat_res = mat_a + mat_b;
+    REQUIRE(mat_res(0, 0) == 36);
+    REQUIRE(mat_res(0, 1) == 280);
+    REQUIRE(mat_res(0, 2) == -1);
+    REQUIRE(mat_res(0, 3) == 18);
+    REQUIRE(mat_res(1, 0) == 120);
+    REQUIRE(mat_res(1, 1) == -283);
+    REQUIRE(mat_res(1, 2) == -482);
+    REQUIRE(mat_res(1, 3) == -2247);
+    REQUIRE(mat_res(2, 0) == 0);
+    REQUIRE(mat_res(2, 1) == 23);
+    REQUIRE(mat_res(2, 2) == 0);
+    REQUIRE(mat_res(2, 3) == 29);
+}
