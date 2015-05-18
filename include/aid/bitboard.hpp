@@ -88,7 +88,6 @@ namespace aid {
 
     };
 
-    // bitwise non member operators
     template<std::size_t Rows, std::size_t Cols>
     bitboard<Rows, Cols> operator<<(bitboard<Rows, Cols> lhs, std::size_t s) {
         return lhs <<= s;

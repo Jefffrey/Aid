@@ -73,4 +73,21 @@ namespace aid {
         return lhs -= rhs;
     }
 
+    template<typename Matrix, typename ScalarType>
+    inline Matrix& operator*=(Matrix& lhs, ScalarType const& rhs) {
+        using namespace std::placeholders;
+        std::transform(lhs.begin(), lhs.end(), lhs.begin(), std::bind(std::multiplies<void>(), _1, rhs));
+        return lhs;
+    }
+
+    template<typename Matrix, typename ScalarType>
+    inline Matrix operator*(Matrix lhs, ScalarType const& rhs) {
+        return lhs *= rhs;
+    }
+
+    template<typename Matrix, typename ScalarType>
+    inline Matrix operator*(ScalarType const& lhs, Matrix rhs) {
+        return rhs *= lhs;
+    }
+
 }

@@ -163,3 +163,59 @@ TEST_CASE("operator-=") {
     }
 
 }
+
+TEST_CASE("operator*=") {
+
+    SECTION("aid::matrix") {
+        aid::matrix<int, 2, 3> mat_res
+            { 2, -34, 0
+            , 0, 1, 45 };
+
+        aid::matrix<int, 2, 3> mat_cpy = mat_res;
+        mat_res *= 1;
+        REQUIRE(mat_res == mat_cpy);
+        
+        mat_res *= -3;
+        REQUIRE(mat_res(0, 0) == -6);
+        REQUIRE(mat_res(0, 1) == 102);
+        REQUIRE(mat_res(0, 2) == 0);
+        REQUIRE(mat_res(1, 0) == 0);
+        REQUIRE(mat_res(1, 1) == -3);
+        REQUIRE(mat_res(1, 2) == -135);
+
+        mat_res *= 0;
+        REQUIRE((mat_res == aid::matrix<int, 2, 3>(0)));
+    }
+
+}
+
+TEST_CASE("operator*") {
+
+    SECTION("aid::matrix") {
+        aid::matrix<int, 2, 3> mat_a
+            { 2, -34, 0
+            , 0, 1, 45 };
+
+        auto mat_res = mat_a * -3;
+        REQUIRE(mat_res(0, 0) == -6);
+        REQUIRE(mat_res(0, 1) == 102);
+        REQUIRE(mat_res(0, 2) == 0);
+        REQUIRE(mat_res(1, 0) == 0);
+        REQUIRE(mat_res(1, 1) == -3);
+        REQUIRE(mat_res(1, 2) == -135);
+
+        auto mat_res2 = -3 * mat_a;
+        REQUIRE(mat_res(0, 0) == -6);
+        REQUIRE(mat_res(0, 1) == 102);
+        REQUIRE(mat_res(0, 2) == 0);
+        REQUIRE(mat_res(1, 0) == 0);
+        REQUIRE(mat_res(1, 1) == -3);
+        REQUIRE(mat_res(1, 2) == -135);
+
+        REQUIRE(mat_a * 1 == mat_a);
+        REQUIRE(1 * mat_a == mat_a);
+        REQUIRE(mat_a * -1 == -mat_a);
+        REQUIRE(-1 * mat_a == -mat_a);
+    }
+
+}
