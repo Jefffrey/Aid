@@ -83,6 +83,34 @@ TEST_CASE("binary operator+") {
 TEST_CASE("operator+=") {
 
     SECTION("aid::matrix") {
+        aid::matrix<int, 3, 4> mat_res
+            { 3, 4, -1, 0
+            , 82, -245, -44, -2344
+            , 0, 0, 1, 0 };
+        aid::matrix<int, 3, 4> mat_b
+            { 33, 276, 0, 18
+            , 38, -38, -438, 97
+            , 0, 23, -1, 29 };
+        mat_res += mat_b;
+        REQUIRE(mat_res(0, 0) == 36);
+        REQUIRE(mat_res(0, 1) == 280);
+        REQUIRE(mat_res(0, 2) == -1);
+        REQUIRE(mat_res(0, 3) == 18);
+        REQUIRE(mat_res(1, 0) == 120);
+        REQUIRE(mat_res(1, 1) == -283);
+        REQUIRE(mat_res(1, 2) == -482);
+        REQUIRE(mat_res(1, 3) == -2247);
+        REQUIRE(mat_res(2, 0) == 0);
+        REQUIRE(mat_res(2, 1) == 23);
+        REQUIRE(mat_res(2, 2) == 0);
+        REQUIRE(mat_res(2, 3) == 29);
+    }
+
+}
+
+TEST_CASE("binary operator-") {
+
+    SECTION("aid::matrix") {
         aid::matrix<int, 3, 4> mat_a
             { 3, 4, -1, 0
             , 82, -245, -44, -2344
@@ -91,19 +119,47 @@ TEST_CASE("operator+=") {
             { 33, 276, 0, 18
             , 38, -38, -438, 97
             , 0, 23, -1, 29 };
-        mat_a += mat_b;
-        REQUIRE(mat_a(0, 0) == 36);
-        REQUIRE(mat_a(0, 1) == 280);
-        REQUIRE(mat_a(0, 2) == -1);
-        REQUIRE(mat_a(0, 3) == 18);
-        REQUIRE(mat_a(1, 0) == 120);
-        REQUIRE(mat_a(1, 1) == -283);
-        REQUIRE(mat_a(1, 2) == -482);
-        REQUIRE(mat_a(1, 3) == -2247);
-        REQUIRE(mat_a(2, 0) == 0);
-        REQUIRE(mat_a(2, 1) == 23);
-        REQUIRE(mat_a(2, 2) == 0);
-        REQUIRE(mat_a(2, 3) == 29);
+        auto mat_res = mat_a - mat_b;
+        REQUIRE(mat_res(0, 0) == -30);
+        REQUIRE(mat_res(0, 1) == -272);
+        REQUIRE(mat_res(0, 2) == -1);
+        REQUIRE(mat_res(0, 3) == -18);
+        REQUIRE(mat_res(1, 0) == 44);
+        REQUIRE(mat_res(1, 1) == -207);
+        REQUIRE(mat_res(1, 2) == 394);
+        REQUIRE(mat_res(1, 3) == -2441);
+        REQUIRE(mat_res(2, 0) == 0);
+        REQUIRE(mat_res(2, 1) == -23);
+        REQUIRE(mat_res(2, 2) == 2);
+        REQUIRE(mat_res(2, 3) == -29);
+    }
+
+}
+
+TEST_CASE("operator-=") {
+
+    SECTION("aid::matrix") {
+        aid::matrix<int, 3, 4> mat_res
+            { 3, 4, -1, 0
+            , 82, -245, -44, -2344
+            , 0, 0, 1, 0 };
+        aid::matrix<int, 3, 4> mat_b
+            { 33, 276, 0, 18
+            , 38, -38, -438, 97
+            , 0, 23, -1, 29 };
+        mat_res -= mat_b;
+        REQUIRE(mat_res(0, 0) == -30);
+        REQUIRE(mat_res(0, 1) == -272);
+        REQUIRE(mat_res(0, 2) == -1);
+        REQUIRE(mat_res(0, 3) == -18);
+        REQUIRE(mat_res(1, 0) == 44);
+        REQUIRE(mat_res(1, 1) == -207);
+        REQUIRE(mat_res(1, 2) == 394);
+        REQUIRE(mat_res(1, 3) == -2441);
+        REQUIRE(mat_res(2, 0) == 0);
+        REQUIRE(mat_res(2, 1) == -23);
+        REQUIRE(mat_res(2, 2) == 2);
+        REQUIRE(mat_res(2, 3) == -29);
     }
 
 }

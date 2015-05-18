@@ -62,4 +62,15 @@ namespace aid {
         return lhs += rhs;
     }
 
+    template<typename Matrix>
+    inline Matrix& operator-=(Matrix& lhs, Matrix const& rhs) {
+        std::transform(lhs.begin(), lhs.end(), rhs.begin(), lhs.begin(), std::minus<void>());
+        return lhs;
+    }
+
+    template<typename Matrix>
+    inline Matrix operator-(Matrix lhs, Matrix const& rhs) {
+        return lhs -= rhs;
+    }
+
 }
