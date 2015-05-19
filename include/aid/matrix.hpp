@@ -125,4 +125,7 @@ namespace aid {
     template<typename ValueType, std::size_t Rows>
     using col_vector = matrix<ValueType, Rows, 1>;
 
+    template<typename ValueType, std::size_t Rows, std::size_t Cols>
+    struct is_matrix<aid::matrix<ValueType, Rows, Cols>> : std::true_type {};
+
 }

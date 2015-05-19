@@ -4,6 +4,9 @@
 
 namespace aid {
 
+    template<typename Class>
+    struct is_matrix : std::false_type {};
+
     template<typename Matrix>
     struct is_vector {
         static constexpr bool value =

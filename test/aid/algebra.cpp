@@ -212,10 +212,10 @@ TEST_CASE("operator*") {
         REQUIRE(mat_res(1, 1) == -3);
         REQUIRE(mat_res(1, 2) == -135);
 
-        REQUIRE(mat_a * 1 == mat_a);
-        REQUIRE(1 * mat_a == mat_a);
-        REQUIRE(mat_a * -1 == -mat_a);
-        REQUIRE(-1 * mat_a == -mat_a);
+        REQUIRE((mat_a * 1) == mat_a);
+        REQUIRE((1 * mat_a) == mat_a);
+        REQUIRE((mat_a * -1) == -mat_a);
+        REQUIRE((-1 * mat_a) == -mat_a);
     }
 
 }

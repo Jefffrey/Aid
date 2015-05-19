@@ -46,47 +46,71 @@ namespace aid {
     }
 
     template<typename Matrix>
-    inline Matrix operator-(Matrix mat) {
+    typename std::enable_if<
+        is_matrix<Matrix>::value,
+        Matrix
+    >::type operator-(Matrix mat) {
         std::transform(mat.begin(), mat.end(), mat.begin(), std::negate<void>());
         return mat;
     }
 
     template<typename Matrix>
-    inline Matrix& operator+=(Matrix& lhs, Matrix const& rhs) {
+    typename std::enable_if<
+        is_matrix<Matrix>::value,
+        Matrix&
+    >::type operator+=(Matrix& lhs, Matrix const& rhs) {
         std::transform(lhs.begin(), lhs.end(), rhs.begin(), lhs.begin(), std::plus<void>());
         return lhs;
     }
 
     template<typename Matrix>
-    inline Matrix operator+(Matrix lhs, Matrix const& rhs) {
+    typename std::enable_if<
+        is_matrix<Matrix>::value,
+        Matrix
+    >::type operator+(Matrix lhs, Matrix const& rhs) {
         return lhs += rhs;
     }
 
     template<typename Matrix>
-    inline Matrix& operator-=(Matrix& lhs, Matrix const& rhs) {
+    typename std::enable_if<
+        is_matrix<Matrix>::value,
+        Matrix&
+    >::type operator-=(Matrix& lhs, Matrix const& rhs) {
         std::transform(lhs.begin(), lhs.end(), rhs.begin(), lhs.begin(), std::minus<void>());
         return lhs;
     }
 
     template<typename Matrix>
-    inline Matrix operator-(Matrix lhs, Matrix const& rhs) {
+    typename std::enable_if<
+        is_matrix<Matrix>::value,
+        Matrix
+    >::type operator-(Matrix lhs, Matrix const& rhs) {
         return lhs -= rhs;
     }
 
     template<typename Matrix, typename ScalarType>
-    inline Matrix& operator*=(Matrix& lhs, ScalarType const& rhs) {
+    typename std::enable_if<
+        is_matrix<Matrix>::value,
+        Matrix&
+    >::type operator*=(Matrix& lhs, ScalarType const& rhs) {
         using namespace std::placeholders;
         std::transform(lhs.begin(), lhs.end(), lhs.begin(), std::bind(std::multiplies<void>(), _1, rhs));
         return lhs;
     }
 
     template<typename Matrix, typename ScalarType>
-    inline Matrix operator*(Matrix lhs, ScalarType const& rhs) {
+    typename std::enable_if<
+        is_matrix<Matrix>::value,
+        Matrix
+    >::type operator*(Matrix lhs, ScalarType const& rhs) {
         return lhs *= rhs;
     }
 
     template<typename Matrix, typename ScalarType>
-    inline Matrix operator*(ScalarType const& lhs, Matrix rhs) {
+    typename std::enable_if<
+        is_matrix<Matrix>::value,
+        Matrix
+    >::type operator*(ScalarType const& lhs, Matrix rhs) {
         return rhs *= lhs;
     }
 
