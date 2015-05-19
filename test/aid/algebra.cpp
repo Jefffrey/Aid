@@ -36,6 +36,20 @@ TEST_CASE("aid::x, aid::y, aid::z, aid::w") {
 
 }
 
+TEST_CASE("aid::euclidean_norm") {
+
+    SECTION("aid::row_vector") {
+        aid::row_vector<double, 2> vec_a { 28.0, 65.0 };
+        REQUIRE(aid::euclidean_norm(vec_a) == 70.77428911688199);
+    }
+
+    SECTION("aid::col_vector") {
+        aid::row_vector<double, 2> vec_a { 28.0, 65.0 };
+        REQUIRE(aid::euclidean_norm(vec_a) == 70.77428911688199);
+    }
+
+}
+
 TEST_CASE("unary operator-") {
 
     SECTION("aid::matrix") {

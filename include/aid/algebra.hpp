@@ -2,6 +2,8 @@
 
 #include <algorithm>
 #include <functional>
+#include <cmath>
+#include <numeric>
 
 #include <aid/matrix.hpp> 
 #include <aid/matrix_traits.hpp>
@@ -43,6 +45,17 @@ namespace aid {
             ( aid::is_four_dimensional_vector<Vector>::value
             , "function `w` is only available for 4 dimensional vectors" );
         return vec[3];
+    }
+
+    template<typename Vector>
+    typename std::enable_if<
+        is_vector<Vector>::value,
+        typename Vector::value_type
+    >::type euclidean_norm(Vector const& vec) {
+        using val = typename Vector::value_type;
+        auto acc_fn = [](val const& init, val const& curr) { return init + std::pow(curr, 2); };
+        auto sum = std::accumulate(vec.begin(), vec.end(), 0, acc_fn);
+        return std::sqrt(sum);
     }
 
     template<typename Matrix>
