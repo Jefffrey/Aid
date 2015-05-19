@@ -219,3 +219,46 @@ TEST_CASE("operator*") {
     }
 
 }
+
+TEST_CASE("operator/=") {
+
+    SECTION("aid::matrix") {
+        aid::matrix<int, 2, 3> mat_res
+            { 12, -36, 0
+            , 0, -24, 60 };
+
+        aid::matrix<int, 2, 3> mat_cpy = mat_res;
+        mat_res /= 1;
+        REQUIRE(mat_res == mat_cpy);
+        
+        mat_res /= -3;
+        REQUIRE(mat_res(0, 0) == -4);
+        REQUIRE(mat_res(0, 1) == 12);
+        REQUIRE(mat_res(0, 2) == 0);
+        REQUIRE(mat_res(1, 0) == 0);
+        REQUIRE(mat_res(1, 1) == 8);
+        REQUIRE(mat_res(1, 2) == -20);
+    }
+
+}
+
+TEST_CASE("operator/") {
+
+    SECTION("aid::matrix") {
+        aid::matrix<int, 2, 3> mat_a
+            { 12, -36, 0
+            , 0, -24, 60 };
+
+        auto mat_res = mat_a / -3;
+        REQUIRE(mat_res(0, 0) == -4);
+        REQUIRE(mat_res(0, 1) == 12);
+        REQUIRE(mat_res(0, 2) == 0);
+        REQUIRE(mat_res(1, 0) == 0);
+        REQUIRE(mat_res(1, 1) == 8);
+        REQUIRE(mat_res(1, 2) == -20);
+
+        REQUIRE((mat_a / 1) == mat_a);
+        REQUIRE((mat_a / -1) == -mat_a);
+    }
+
+}

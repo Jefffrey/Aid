@@ -10,7 +10,7 @@ namespace aid {
     template<typename Matrix>
     struct is_vector {
         static constexpr bool value =
-            aid::is_matrix<Matrix>::value
+            aid::is_matrix<typename std::decay<Matrix>::type>::value
             && ( std::decay<Matrix>::type::col_size == 1 
                  || std::decay<Matrix>::type::row_size == 1 );
     };

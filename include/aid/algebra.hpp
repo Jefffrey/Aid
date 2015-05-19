@@ -114,4 +114,22 @@ namespace aid {
         return rhs *= lhs;
     }
 
+    template<typename Matrix, typename ScalarType>
+    typename std::enable_if<
+        is_matrix<Matrix>::value,
+        Matrix&
+    >::type operator/=(Matrix& lhs, ScalarType const& rhs) {
+        using namespace std::placeholders;
+        std::transform(lhs.begin(), lhs.end(), lhs.begin(), std::bind(std::divides<void>(), _1, rhs));
+        return lhs;
+    }
+
+    template<typename Matrix, typename ScalarType>
+    typename std::enable_if<
+        is_matrix<Matrix>::value,
+        Matrix
+    >::type operator/(Matrix lhs, ScalarType const& rhs) {
+        return lhs /= rhs;
+    }
+
 }
