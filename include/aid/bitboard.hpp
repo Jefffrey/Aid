@@ -26,12 +26,32 @@ namespace aid {
         bitboard& operator=(bitboard&&) = default;
         bitboard& operator=(bitboard const&) = default;
 
+        template<class CharT, class Traits, class Alloc>
+        explicit bitboard(
+            std::basic_string<CharT, Traits, Alloc> const& str,
+            typename std::basic_string<CharT, Traits, Alloc>::size_type pos = 0,
+            typename std::basic_string<CharT, Traits, Alloc>::size_type n =
+                std::basic_string<CharT, Traits, Alloc>::npos,
+            CharT zero = CharT('0'), 
+            CharT one = CharT('1')
+        ) : bitset(str, pos, n, zero, one)
+            {}
+
+        template<class CharT>
+        explicit bitboard(CharT const* str,
+            typename std::basic_string<CharT>::size_type n =
+                std::basic_string<CharT>::npos,
+            CharT zero = CharT('0'), 
+            CharT one = CharT('1')
+        ) : bitset(str, n, zero, one)
+            {}
+
         reference operator()(std::size_t row, std::size_t col) {
-            return bitset[row * Cols + col];
+            return bitset[(size() - 1) - (row * Cols + col)];
         }
 
         constexpr bool operator()(std::size_t row, std::size_t col) const {
-            return bitset[row * Cols + col];
+            return bitset[(size() - 1) - (row * Cols + col)];
         }
 
         template<bool X = true>
