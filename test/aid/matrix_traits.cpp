@@ -3,6 +3,16 @@
 #include <aid/matrix.hpp>
 #include <aid/matrix_traits.hpp>
 
+TEST_CASE("aid::is_matrix") {
+
+    SECTION("aid::matrix") {
+        using mat = aid::matrix<int, 4, 3>;
+        REQUIRE(aid::is_matrix<mat>::value == true);
+        REQUIRE(aid::is_matrix<int>::value == false);
+    }
+    
+}
+
 TEST_CASE("aid::is_vector") {
 
     SECTION("with a vector") {
