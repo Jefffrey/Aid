@@ -1,6 +1,9 @@
 #pragma once
 
 #include <bitset>
+#include <type_traits>
+
+#include <aid/matrix_traits.hpp>
 
 namespace aid {
 
@@ -9,12 +12,9 @@ namespace aid {
     public:
 
         using array_type        = std::bitset<Rows * Cols>;
-        using value_type        = typename array_type::value_type;
         using reference         = typename array_type::reference;
         using const_reference   = typename array_type::const_reference;
-        using size_type         = typename array_type::size_type;
-        using iterator          = typename array_type::iterator;
-        using const_iterator    = typename array_type::const_iterator;
+        using size_type         = std::size_t;
 
         static constexpr std::size_t col_size       = Rows;
         static constexpr std::size_t row_size       = Cols;
@@ -34,15 +34,17 @@ namespace aid {
             return bitset[row * Cols + col];
         }
 
+        template<bool X = true>
         typename std::enable_if<
-            is_vector<bitboard>::value,
+            is_vector<bitboard>::value && X,
             reference 
         >::type operator[](size_type i) {
             return bitset[i];
         }
 
+        template<bool X = true>
         typename std::enable_if<
-            is_vector<bitboard>::value,
+            is_vector<bitboard>::value && X,
             const_reference 
         >::type operator[](size_type i) const {
             return bitset[i];
@@ -63,16 +65,18 @@ namespace aid {
             return (*this);
         }
 
+        template<bool X = true>
         typename std::enable_if<
-            is_row_vector<bitboard>::value,
+            is_row_vector<bitboard>::value && X,
             bitboard&
         >::type operator<<=(std::size_t s) {
             bitset <<= s;
             return (*this);
         }
 
+        template<bool X = true>
         typename std::enable_if<
-            is_row_vector<bitboard>::value,
+            is_row_vector<bitboard>::value && X,
             bitboard&
         >::type operator>>=(std::size_t s) {
             bitset >>= s;
@@ -88,7 +92,7 @@ namespace aid {
             return ret;
         }
 
-        bool operator==(bitboard const& rhs) const { return bitboard == rhs.bitboard; }
+        bool operator==(bitboard const& rhs) const { return bitset == rhs.bitset; }
         bool operator!=(bitboard const& rhs) const { return !((*this) == rhs); }
 
         bool all() const { return bitset.all(); }
