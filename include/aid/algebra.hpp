@@ -4,6 +4,7 @@
 #include <functional>
 #include <cmath>
 #include <numeric>
+#include <cassert>
 
 #include <aid/matrix.hpp> 
 #include <aid/matrix_traits.hpp>
@@ -75,6 +76,7 @@ namespace aid {
     normalize(Vector& vec) {
         using namespace std::placeholders;
         auto n = euclidean_norm(vec);
+        assert(n != typename Vector::value_type(0));
         std::transform(vec.begin(), vec.end(), vec.begin(), std::bind(std::divides<void>(), _1, n));
     }
 
