@@ -21,6 +21,16 @@ Additionally, testing depends on:
 
 This is an header-only library, so the installation is as simple as pasting the content of the `include/` folder into some accessible path.
 
+Anyway, by invoking:
+
+```
+ninja install
+```
+
+the files and folders inside `include/` will be copied in the installation path specified by `--install-path` of `./bootstrap.py` (it defaults to `/usr/local/`). 
+
+I'd recommend inspecting the actual command being run before running it, as the syntax is different between operating systems.
+
 ###Testing
 
 To run tests, execute the following commands from the root of this folder:
