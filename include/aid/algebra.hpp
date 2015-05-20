@@ -58,6 +58,18 @@ namespace aid {
         return std::sqrt(sum);
     }
 
+    template<typename Vector>
+    typename std::enable_if<
+        is_vector<Vector>::value,
+        typename Vector::value_type
+    >::type euclidean_distance(Vector lhs, Vector const& rhs) {
+        using val = typename Vector::value_type;
+        lhs -= rhs;
+        auto acc_fn = [](val const& init, val const& curr) { return init + std::pow(curr, 2); };
+        auto sum = std::accumulate(lhs.begin(), lhs.end(), 0, acc_fn);
+        return std::sqrt(sum);
+    }
+
     template<typename Matrix>
     typename std::enable_if<
         is_matrix<Matrix>::value,

@@ -44,8 +44,24 @@ TEST_CASE("aid::euclidean_norm") {
     }
 
     SECTION("aid::col_vector") {
-        aid::row_vector<double, 2> vec_a { 28.0, 65.0 };
+        aid::col_vector<double, 2> vec_a { 28.0, 65.0 };
         REQUIRE(aid::euclidean_norm(vec_a) == 70.77428911688199);
+    }
+
+}
+
+TEST_CASE("aid::euclidean_distance") {
+
+    SECTION("aid::row_vector") {
+        aid::row_vector<double, 2> vec_a { 28.0, 65.0 };
+        aid::row_vector<double, 2> vec_b { 2.0, -45.0 };
+        REQUIRE(aid::euclidean_distance(vec_a, vec_b) == 113.03096920755833);
+    }
+
+    SECTION("aid::col_vector") {
+        aid::col_vector<double, 2> vec_a { 28.0, 65.0 };
+        aid::col_vector<double, 2> vec_b { 2.0, -45.0 };
+        REQUIRE(aid::euclidean_distance(vec_a, vec_b) == 113.03096920755833);
     }
 
 }
