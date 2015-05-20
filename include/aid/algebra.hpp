@@ -53,8 +53,8 @@ namespace aid {
         typename Vector::value_type
     >::type euclidean_norm(Vector const& vec) {
         using val = typename Vector::value_type;
-        auto acc_fn = [](val const& init, val const& curr) { return init + std::pow(curr, 2); };
-        auto sum = std::accumulate(vec.begin(), vec.end(), 0, acc_fn);
+        auto acc_fn = [](val init, val const& curr) { return init += std::pow(curr, 2); };
+        auto sum = std::accumulate(vec.begin(), vec.end(), val(), acc_fn);
         return std::sqrt(sum);
     }
 
@@ -68,6 +68,14 @@ namespace aid {
         auto acc_fn = [](val const& init, val const& curr) { return init + std::pow(curr, 2); };
         auto sum = std::accumulate(lhs.begin(), lhs.end(), 0, acc_fn);
         return std::sqrt(sum);
+    }
+
+    template<typename Vector>
+    typename std::enable_if<is_vector<Vector>::value, void>::type
+    normalize(Vector& vec) {
+        using namespace std::placeholders;
+        auto n = euclidean_norm(vec);
+        std::transform(vec.begin(), vec.end(), vec.begin(), std::bind(std::divides<void>(), _1, n));
     }
 
     template<typename Matrix>
