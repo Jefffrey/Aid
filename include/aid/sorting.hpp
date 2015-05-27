@@ -169,4 +169,37 @@ namespace aid {
         heap_sort(first, last, std::greater<typename It::value_type>());
     }
 
+    namespace detail {
+
+        // takes the last element as a pivot and returns
+        // the iterator pointing to the past the end of the first
+        // range and the first element of the second range
+        template<typename It>
+        It partition(It begin, It end) {
+            if (begin == end) return end;
+            auto pivot = *(end - 1);
+            auto left = begin;
+            for (auto right = begin; right != end; ++right) {
+                if (*right <= pivot) {
+                    std::iter_swap(left, right);
+                    ++left;
+                }
+            }
+            return left;
+        }
+        
+    }
+
+    // worst case: n^2
+    // average case: n * log(n)
+    // best case: n * log(n)
+    // space complexity: 1
+    template<typename It>
+    void quick_sort(It begin, It end) {
+        if (begin == end) return;
+        auto pivot = detail::partition(begin, end);
+        quick_sort(begin, pivot - 1);
+        quick_sort(pivot, end);
+    }
+
 }
