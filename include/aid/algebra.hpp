@@ -54,7 +54,7 @@ namespace aid {
         typename Vector::value_type
     >::type euclidean_norm(Vector const& vec) {
         using val = typename Vector::value_type;
-        auto acc_fn = [](val init, val const& curr) { return init += std::pow(curr, 2); };
+        auto acc_fn = [](val const& init, val const& curr) { return init + std::pow(curr, 2); };
         auto sum = std::accumulate(vec.begin(), vec.end(), val(), acc_fn);
         return std::sqrt(sum);
     }
@@ -64,11 +64,8 @@ namespace aid {
         is_vector<Vector>::value,
         typename Vector::value_type
     >::type euclidean_distance(Vector lhs, Vector const& rhs) {
-        using val = typename Vector::value_type;
         lhs -= rhs;
-        auto acc_fn = [](val const& init, val const& curr) { return init + std::pow(curr, 2); };
-        auto sum = std::accumulate(lhs.begin(), lhs.end(), 0, acc_fn);
-        return std::sqrt(sum);
+        return euclidean_norm(lhs);
     }
 
     template<typename Vector>
