@@ -62,4 +62,111 @@ namespace aid {
         std::copy(begin(temp), end(temp), first);
     }
 
+    namespace detail {
+
+        // returns the left child of the given iterator
+        // if the current iterator does not have a left child
+        // in the range, the behaviour is undefined
+        template<typename It>
+        It left_child(It begin, It end, It current) {
+            auto distance = std::distance(begin, current);
+            return std::next(current, distance + 1);
+        }
+
+        // returns the right child of the given iterator;
+        // if the current iterator does not have a right child
+        // in the range, the behaviour is undefined
+        template<typename It>
+        It right_child(It begin, It end, It current) {
+            auto distance = std::distance(begin, current);
+            return std::next(current, distance + 2);
+        }
+        
+        // returns the parent of the given iterator;
+        // calling this on the root has undefined behaviour
+        template<typename It>
+        It parent(It begin, It end, It current) {
+            auto distance = std::distance(begin, current);
+            return std::prev(current, distance / 2 + 1);
+        }
+        
+        // returns true only if the given iterator has
+        // a left child in the range
+        template<typename It>
+        bool has_left_child(It begin, It end, It current) {
+            auto distance = std::distance(begin, current);
+            auto end_distance = std::distance(current, end);
+            return end_distance > (distance + 1);
+        }
+        
+        // returns true only if the given iterator has
+        // a right child in the range
+        template<typename It>
+        bool has_right_child(It begin, It end, It current) {
+            auto distance = std::distance(begin, current);
+            auto end_distance = std::distance(current, end);
+            return end_distance > (distance + 2);
+        }
+        
+        // given a range and an iterator, it "takes" down
+        // the value pointed to by the iterator, until the value
+        // does not satisfy the given predicate over one of the children
+        template<typename It, typename BinaryOp>
+        void heapify(It first, It last, It i, BinaryOp op) {
+            auto to_swap = i;
+            if (has_left_child(first, last, i) && op(*left_child(first, last, i), *to_swap))
+                to_swap = left_child(first, last, i);
+            if (has_right_child(first, last, i) && op(*right_child(first, last, i), *to_swap))
+                to_swap = right_child(first, last, i);
+            if (to_swap != i) {
+                std::iter_swap(to_swap, i);
+                heapify(first, last, to_swap, op);
+            }
+        }
+        
+        // same version as above, 
+        // just with `std::greater` as default predicate
+        template<typename It>
+        void heapify(It first, It last, It i) {
+            heapify(first, last, i, std::greater<typename It::value_type>());
+        }
+
+    }
+    
+    // build the heap structure from an unsorted container
+    template<typename It, typename BinaryOp>
+    void build_heap(It first, It last, BinaryOp op) {
+        for (auto it = detail::parent(first, last, last - 1); /* */; --it) {
+            detail::heapify(first, last, it, op);
+            if (it == first) break;
+        }
+    }
+        
+    // same version as above, 
+    // just with `std::greater` as default predicate
+    template<typename It>
+    void build_heap(It first, It last) {
+        build_heap(first, last, std::greater<typename It::value_type>());
+    }
+    
+    // worst case: n * log(n)
+    // average case: n * log(n)
+    // worst case: n * log(n)
+    // space complexity: 1
+    template<typename It, typename BinaryOp>
+    void heap_sort(It first, It last, BinaryOp op) {
+        build_heap(first, last, op);
+        for (auto heap_last = last - 1; heap_last != first; --heap_last) {
+            std::iter_swap(first, heap_last);
+            detail::heapify(first, heap_last, first, op);
+        }
+    }
+    
+    // same version as above, 
+    // just with `std::greater` as default predicate
+    template<typename It>
+    void heap_sort(It first, It last) {
+        heap_sort(first, last, std::greater<typename It::value_type>());
+    }
+
 }
