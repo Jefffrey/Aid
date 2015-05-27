@@ -68,7 +68,7 @@ namespace aid {
         // if the current iterator does not have a left child
         // in the range, the behaviour is undefined
         template<typename It>
-        It left_child(It begin, It end, It current) {
+        It left_child(It begin, It /* end */, It current) {
             auto distance = std::distance(begin, current);
             return std::next(current, distance + 1);
         }
@@ -77,7 +77,7 @@ namespace aid {
         // if the current iterator does not have a right child
         // in the range, the behaviour is undefined
         template<typename It>
-        It right_child(It begin, It end, It current) {
+        It right_child(It begin, It /* end */, It current) {
             auto distance = std::distance(begin, current);
             return std::next(current, distance + 2);
         }
@@ -85,7 +85,7 @@ namespace aid {
         // returns the parent of the given iterator;
         // calling this on the root has undefined behaviour
         template<typename It>
-        It parent(It begin, It end, It current) {
+        It parent(It begin, It /* end */, It current) {
             auto distance = std::distance(begin, current);
             return std::prev(current, distance / 2 + 1);
         }
@@ -215,9 +215,9 @@ namespace aid {
         for (auto it = next(begin(counter)); it != end(counter); ++it)
             *it += *(it - 1);
         for (auto it = last - 1; /* */; --it) {
-            std::size_t& idx = counter[index_for(*it)] - 1;
+            std::size_t idx = counter[index_for(*it)] - 1;
             *std::next(out, idx) = *it;
-            idx--;
+            counter[index_for(*it)]--;
             if (it == first) break;
         }
     }
