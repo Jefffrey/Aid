@@ -201,5 +201,25 @@ namespace aid {
         quick_sort(begin, pivot - 1);
         quick_sort(pivot, end);
     }
+    
+    // worst case: n + k
+    // average case: n + k
+    // best case: n + k
+    // space complexity: n + k
+    template<typename It, typename OutIt, typename BinaryOp>
+    void counting_sort(It first, It last, OutIt out, std::size_t k, BinaryOp index_for) {
+        std::vector<std::size_t> counter(k);
+        for (auto it = first; it != last; ++it) {
+            counter[index_for(*it)]++;
+        }
+        for (auto it = next(begin(counter)); it != end(counter); ++it)
+            *it += *(it - 1);
+        for (auto it = last - 1; /* */; --it) {
+            std::size_t& idx = counter[index_for(*it)] - 1;
+            *std::next(out, idx) = *it;
+            idx--;
+            if (it == first) break;
+        }
+    }
 
 }
